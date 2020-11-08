@@ -107,6 +107,9 @@ MainMenu:
 .pressedA
 	call GBPalWhiteOutWithDelay3
 	call ClearScreen
+	ld b, BANK(LoadTilesetHeaderOnly)
+	ld hl, LoadTilesetHeaderOnly
+	call Bankswitch		; force a tileset header reload, this should fix needing WtW on vanilla save files
 	ld a,PLAYER_DIR_DOWN
 	ld [wPlayerDirection],a
 	ld c,10

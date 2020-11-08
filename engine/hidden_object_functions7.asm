@@ -66,7 +66,7 @@ SafariZoneGameOver:
 	xor a
 	ld [wAudioFadeOutControl], a
 	dec a
-	call PlaySound
+	call PlayMusicID
 	ld c, BANK(SFX_Safari_Zone_PA)
 	ld a, SFX_SAFARI_ZONE_PA
 	call PlayMusic
@@ -375,8 +375,7 @@ BillsHouseInitiatedText:
 	TX_BLINK
 	TX_ASM
 	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
+	call PlayMusicID
 	ld c, 16
 	call DelayFrames
 	ld a, SFX_SWITCH

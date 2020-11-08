@@ -3228,6 +3228,10 @@ wBoxMonNicksEnd:: ; dee2
 
 wBoxDataEnd::
 
+wCurrentMusicID::	db
+wMusicIDBank::		db
+wCheckAndFadeMusicID::	db
+wMSU1PacketSend::	ds 16
 
 SECTION "Stack", WRAMX[$df00], BANK[1]
 	ds $ff

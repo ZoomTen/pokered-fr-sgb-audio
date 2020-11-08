@@ -64,13 +64,11 @@ CeruleanCityScript0:
 	ld a, [wWalkBikeSurfState]
 	and a
 	jr z, .asm_19512
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
 .asm_19512
-	ld c, BANK(Music_MeetRival)
-	ld a, MUSIC_MEET_RIVAL
-	call PlayMusic
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival
+	call PlayMusicID
 	xor a
 	ld [hJoyHeld], a
 	ld a, $f0
@@ -171,10 +169,10 @@ CeruleanCityScript2:
 	ld a, $1
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-	callba Music_RivalAlternateStart
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival2
+	call PlayMusicID
 	ld a, $1
 	ld [H_SPRITEINDEX], a
 	call SetSpriteMovementBytesToFF

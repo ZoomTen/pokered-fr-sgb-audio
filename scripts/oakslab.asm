@@ -350,9 +350,10 @@ OaksLabScript10:
 	call SetSpriteFacingDirectionAndDelay
 	ld a, PLAYER_DIR_UP
 	ld [wPlayerMovingDirection], a
-	ld c, BANK(Music_MeetRival)
-	ld a, MUSIC_MEET_RIVAL
-	call PlayMusic
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival
+	call PlayMusicID
 	ld a, $f
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
@@ -441,7 +442,10 @@ OaksLabScript13:
 	ld a, $10
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
-	callba Music_RivalAlternateStart
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival2
+	call PlayMusicID
 	ld a, $1
 	ld [H_SPRITEINDEX], a
 	ld de, .RivalExitMovement
@@ -510,10 +514,10 @@ OaksLabScript15:
 	xor a
 	ld [hJoyHeld], a
 	call EnableAutoTextBoxDrawing
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-	callba Music_RivalAlternateStart
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival2
+	call PlayMusicID
 	ld a, $15
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
@@ -611,10 +615,10 @@ OaksLabScript16:
 	xor a ; NPC_MOVEMENT_DOWN
 	call FillMemory
 	ld [hl], $ff
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-	callba Music_RivalAlternateStart
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival2
+	call PlayMusicID
 	ld a, $1
 	ld [H_SPRITEINDEX], a
 	ld de, wNPCMovementDirections2

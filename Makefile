@@ -1,4 +1,4 @@
-PYTHON := python
+PYTHON := python2
 MD5 := md5sum -c --quiet
 
 2bpp     := $(PYTHON) extras/pokemontools/gfx.py 2bpp
@@ -14,11 +14,11 @@ pokeblue_obj := audio_blue.o main_blue.o text_blue.o wram_blue.o
 .SECONDEXPANSION:
 # Suppress annoying intermediate file deletion messages.
 .PRECIOUS: %.2bpp
-.PHONY: all clean red blue compare
+.PHONY: all clean red blue compare snes_code
 
 roms := pokered.gbc pokeblue.gbc
 
-all: $(roms)
+all: $(roms) snes_code
 red: pokered.gbc
 blue: pokeblue.gbc
 
@@ -29,6 +29,10 @@ compare: red blue
 clean:
 	rm -f $(roms) $(pokered_obj) $(pokeblue_obj) $(roms:.gbc=.sym)
 	find . \( -iname '*.1bpp' -o -iname '*.2bpp' -o -iname '*.pic' \) -exec rm {} +
+	$(MAKE) clean -C audio/msu1/
+
+snes_code:
+	$(MAKE) -C audio/msu1/
 
 %.asm: ;
 

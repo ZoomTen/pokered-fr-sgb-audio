@@ -5,7 +5,7 @@ ShakeElevator:
 	call ShakeElevatorRedrawRow
 	call Delay3
 	ld a, $ff
-	call PlaySound
+	call PlayMusicID
 	ld a, [hSCY]
 	ld d, a
 	ld e, $1

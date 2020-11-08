@@ -602,9 +602,13 @@ TextCommand0B::
 	jr z,.pokemonCry
 	cp a,$16
 	jr z,.pokemonCry
+	push hl
+	call DuckMusicOnSGB
+	pop hl
 	ld a,[hl]
 	call PlaySound
 	call WaitForSoundToFinish
+	call UnduckMusicOnSGB
 	pop hl
 	pop bc
 	jp NextTextCommand

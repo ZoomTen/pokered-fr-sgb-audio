@@ -401,6 +401,7 @@ ShowPokedexDataInternal:
 	set 1,[hl]
 	ld a,$33 ; 3/7 volume
 	ld [rNR50],a
+	call DuckMusicOnSGB
 	call GBPalWhiteOut ; zero all palettes
 	call ClearScreen
 	ld a,[wd11e] ; pokemon ID
@@ -588,7 +589,7 @@ ShowPokedexDataInternal:
 	res 1,[hl]
 	ld a,$77 ; max volume
 	ld [rNR50],a
-	ret
+	jp UnduckMusicOnSGB
 
 HeightWeightText:
 	db   "TAI  ???",$60

@@ -29,10 +29,8 @@ PalletTownScript0:
 	ld [wPlayerMovingDirection],a
 	ld a,$FF
 	call PlaySound ; stop music
-	ld a, BANK(Music_MeetProfOak)
-	ld c,a
-	ld a, MUSIC_MEET_PROF_OAK ; “oak appears” music
-	call PlayMusic
+	ld a, Mus_MeetProfOak ; "oak appears" music
+	call PlayMusicID
 	ld a,$FC
 	ld [wJoyIgnore],a
 	SetEvent EVENT_OAK_APPEARED_IN_PALLET

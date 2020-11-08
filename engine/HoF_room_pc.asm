@@ -21,11 +21,10 @@ HallOfFamePC:
 	ld a, %11000000
 	ld [rBGP], a
 	call EnableLCD
-	ld a, $ff
-	call PlaySoundWaitForCurrent
-	ld c, BANK(Music_Credits)
-	ld a, MUSIC_CREDITS
-	call PlayMusic
+	ld a, %00000010
+	ld [wCheckAndFadeMusicID], a
+	ld a, Mus_Credits
+	call PlayMusicID
 	ld c, 128
 	call DelayFrames
 	xor a

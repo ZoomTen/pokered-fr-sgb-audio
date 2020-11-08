@@ -758,8 +758,6 @@ HandleBlackOut::
 ; Does not print the "blacked out" message.
 
 	call GBFadeOutToBlack
-	ld a, $08
-	call StopMusic
 	ld hl, wd72e
 	res 5, [hl]
 	ld a, Bank(ResetStatusAndHalveMoneyOnBlackout) ; also Bank(SpecialWarpIn) and Bank(SpecialEnterMap)
@@ -771,15 +769,32 @@ HandleBlackOut::
 	jp SpecialEnterMap
 
 StopMusic::
-	ld [wAudioFadeOutControl], a
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-.wait
-	ld a, [wAudioFadeOutControl]
+	ld a, [wOnSGB]
 	and a
-	jr nz, .wait
-	jp StopAllSounds
+	jr nz, .sgb
+	ld a, $FF
+	ld [wNewSoundID], a
+	ld a, %00000100
+	ld [wAudioFadeOutControl], a
+	ret
+.sgb
+	; copy packet template
+	ld bc, 16
+	ld a, BANK(MSU1SoundTemplate)
+	ld hl, MSU1SoundTemplate
+	ld de, wMSU1PacketSend
+	call FarCopyData
+; modify packet template
+	ld a, %00000010
+	ld [wMSU1PacketSend+5], a	; ask for a fade out
+	ld a, $ff
+	ld [wNewSoundID], a	; XXX: Map load sound
+; send it over!
+	ld a, BANK(TransferPacket)
+	ld de,wMSU1PacketSend
+	call BankswitchHome
+	call TransferPacket
+	jp BankswitchBack
 
 HandleFlyWarpOrDungeonWarp::
 	call UpdateSprites
@@ -2288,21 +2303,19 @@ LoadMapHeader::
 	ld a,[wCurMapWidth] ; map width in 4x4 tile blocks
 	add a ; double it
 	ld [wCurrentMapWidth2],a ; map width in 2x2 tile blocks
+LoadMapMusic::
 	ld a,[wCurMap]
 	ld c,a
 	ld b,$00
 	ld a,[H_LOADEDROMBANK]
 	push af
-	ld a, BANK(MapSongBanks)
+	ld a, BANK(MapSongIDs)
 	ld [H_LOADEDROMBANK],a
 	ld [MBC1RomBank],a
-	ld hl, MapSongBanks
+	ld hl, MapSongIDs
 	add hl,bc
-	add hl,bc
-	ld a,[hli]
-	ld [wMapMusicSoundID],a ; music 1
 	ld a,[hl]
-	ld [wMapMusicROMBank],a ; music 2
+	ld [wMapMusicSoundID], a ; music 1
 	pop af
 	ld [H_LOADEDROMBANK],a
 	ld [MBC1RomBank],a

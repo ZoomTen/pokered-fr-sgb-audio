@@ -130,12 +130,10 @@ SilphCo7Script0:
 	ld [wJoyIgnore], a
 	ld a, PLAYER_DIR_DOWN
 	ld [wPlayerMovingDirection], a
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-	ld c, BANK(Music_MeetRival)
-	ld a, MUSIC_MEET_RIVAL
-	call PlayMusic
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival
+	call PlayMusicID
 	ld a, $9
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
@@ -219,10 +217,10 @@ SilphCo7Script4:
 	ld a, $f
 	ld [hSpriteIndexOrTextID], a
 	call DisplayTextID
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
-	callba Music_RivalAlternateStart
+	xor a
+	ld [wCheckAndFadeMusicID], a	; prevent fading in
+	ld a, Mus_MeetRival2
+	call PlayMusicID
 	ld de, MovementData_51d1d
 	ld a, [wcf0d]
 	cp $1

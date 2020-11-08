@@ -4,19 +4,13 @@ PlayDefaultMusic::
 	ld c, a
 	ld d, a
 	ld [wLastMusicSoundID], a
+	ld [wCheckAndFadeMusicID], a
 	jr PlayDefaultMusicCommon
 
 PlayDefaultMusicFadeOutCurrent::
 ; Fade out the current music and then play the default music.
-	ld c, 10
-	ld d, 0
-	ld a, [wd72e]
-	bit 5, a ; has a battle just ended?
-	jr z, PlayDefaultMusicCommon
-	xor a
-	ld [wLastMusicSoundID], a
-	ld c, 8
-	ld d, c
+	ld a, %00000011
+	ld [wCheckAndFadeMusicID], a
 
 PlayDefaultMusicCommon::
 	ld a, [wWalkBikeSurfState]
@@ -24,47 +18,18 @@ PlayDefaultMusicCommon::
 	jr z, .walking
 	cp $2
 	jr z, .surfing
-	ld a, MUSIC_BIKE_RIDING
-	jr .next
+	ld a, Mus_BikeRiding
+	jr .play_music
 
 .surfing
-	ld a, MUSIC_SURFING
-
-.next
-	ld b, a
-	ld a, d
-	and a ; should current music be faded out first?
-	ld a, BANK(Music_BikeRiding)
-	jr nz, .next2
-
-; Only change the audio ROM bank if the current music isn't going to be faded
-; out before the default music begins.
-	ld [wAudioROMBank], a
-
-.next2
-; [wAudioSavedROMBank] will be copied to [wAudioROMBank] after fading out the
-; current music (if the current music is faded out).
-	ld [wAudioSavedROMBank], a
-	jr .next3
+	ld a, Mus_Surfing
+	jr .play_music
 
 .walking
+	call LoadMapMusic
 	ld a, [wMapMusicSoundID]
-	ld b, a
-	call CompareMapMusicBankWithCurrentBank
-	jr c, .next4
-
-.next3
-	ld a, [wLastMusicSoundID]
-	cp b ; is the default music already playing?
-	ret z ; if so, do nothing
-
-.next4
-	ld a, c
-	ld [wAudioFadeOutControl], a
-	ld a, b
-	ld [wLastMusicSoundID], a
-	ld [wNewSoundID], a
-	jp PlaySound
+.play_music
+	jp PlayMusicID
 
 UpdateMusic6Times::
 ; This is called when entering a map, before fading out the current music and
@@ -215,4 +180,49 @@ PlaySound::
 	pop bc
 	pop de
 	pop hl
+	ret
+
+PlayMusicID::
+	push de
+	ld d, a
+	ldh a, [H_LOADEDROMBANK]
+	push af
+	ld a, BANK(_PlayMusicID)
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	call _PlayMusicID
+	pop af
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	pop de
+	ret
+
+DuckMusicOnSGB::
+	ld a, [wOnSGB]
+	and a
+	ret z
+	ldh a, [H_LOADEDROMBANK]
+	push af
+	ld a, BANK(Trn_DuckMusic)
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	call Trn_DuckMusic
+	pop af
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	ret
+
+UnduckMusicOnSGB::
+	ld a, [wOnSGB]
+	and a
+	ret z
+	ldh a, [H_LOADEDROMBANK]
+	push af
+	ld a, BANK(Trn_UnduckMusic)
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
+	call Trn_UnduckMusic
+	pop af
+	ldh [H_LOADEDROMBANK], a
+	ld [MBC1RomBank], a
 	ret

@@ -159,15 +159,25 @@ Audio2_PlayNextNote:
 	add hl, bc
 	res 4, [hl]
 	res 5, [hl]
+
+	ld a, [wOnSGB]
+	and a
+	jr z, .gb
+	ld a, c
+	cp Ch5
+	jr nz, .beginChecks
+	jr .lowhealth
+
+.gb
 	ld a, c
 	cp Ch4
 	jr nz, .beginChecks
+.lowhealth
 	ld a, [wLowHealthAlarm] ;low health alarm enabled?
 	bit 7, a
 	ret nz
 .beginChecks
-	call Audio2_endchannel
-	ret
+	; --
 
 Audio2_endchannel:
 	call Audio2_GetNextMusicByte

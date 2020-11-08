@@ -44,23 +44,17 @@ SSAnne7Text1:
 SSAnne7RubText:
 	TX_FAR _SSAnne7RubText
 	TX_ASM
-	ld a, [wAudioROMBank]
-	cp BANK(Audio3_UpdateMusic)
-	ld [wAudioSavedROMBank], a
-	jr nz, .asm_61908
-	ld a, $ff
-	ld [wNewSoundID], a
-	call PlaySound
+	ld a, $FF
+	call PlayMusicID
 	ld a, Bank(Music_PkmnHealed)
 	ld [wAudioROMBank], a
-.asm_61908
 	ld a, MUSIC_PKMN_HEALED
 	ld [wNewSoundID], a
 	call PlaySound
-.asm_61910
+.waitHealSoundFinish
 	ld a, [wChannelSoundIDs]
 	cp MUSIC_PKMN_HEALED
-	jr z, .asm_61910
+	jr z, .waitHealSoundFinish
 	call PlayDefaultMusic
 	SetEvent EVENT_RUBBED_CAPTAINS_BACK
 	ld hl, wd72d
