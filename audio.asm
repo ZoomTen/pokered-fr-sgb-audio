@@ -365,6 +365,7 @@ SECTION "Audio Engine 1", ROMX, BANK[AUDIO_1]
 PlayBattleMusic::
 	xor a
 	ld [wCheckAndFadeMusicID], a
+	ld [wAudioFadeOutControl], a
 	ld [wLowHealthAlarm], a
 	call DelayFrame
 	ld a, [wGymLeaderNo]
